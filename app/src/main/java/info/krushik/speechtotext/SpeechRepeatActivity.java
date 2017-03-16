@@ -31,7 +31,7 @@ import com.krushik.speechtotext.R;
  * - presents user with list of suggested words
  * - when user selects a word from the list, the app speaks the word back using the TTS engine
  */
-public class SpeechRepeatActivity extends Activity implements OnClickListener, OnInitListener {
+public class  SpeechRepeatActivity extends Activity implements OnClickListener, OnInitListener {
 
     //variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
@@ -127,7 +127,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
         //set speech model
         listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         //specify number of results to retrieve
-        listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
+        listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
 
         //start listening
         startActivityForResult(listenIntent, VR_REQUEST);
