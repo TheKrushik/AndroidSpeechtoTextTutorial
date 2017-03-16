@@ -1,4 +1,4 @@
-package com.androidtutorialpoint.androidspeechtotexttutorial;
+package info.krushik.speechtotext;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,6 +1,5 @@
-package com.androidtutorialpoint.androidspeechtotexttutorial;
+package info.krushik.speechtotext;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -11,8 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.krushik.speechtotext.R;
+
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,12 +21,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> resultStringArrayList;
     TextView tv;
     Button bTalk;
+    Button btn2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        btn2 = (Button) findViewById(R.id.btn2);
 
         bTalk = (Button) findViewById(R.id.bTalk);
         tv = (TextView) findViewById(R.id.tvSpeech);
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "com.androidtutorialpoint.androidspeechtotexttutorial");
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-//        recognizeIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
+        recognizeIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
 
         //register the intent with the recognizer
         recognizer.setRecognitionListener(listener);
@@ -119,5 +122,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void OnClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn2:
+                Intent intent = new Intent(this, SpeechRepeatActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
 
 }

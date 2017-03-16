@@ -1,4 +1,4 @@
-package com.androidtutorialpoint.androidspeechtotexttutorial;
+package info.krushik.speechtotext;
 
 import org.junit.Test;
 
