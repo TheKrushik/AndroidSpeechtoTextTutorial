@@ -33,28 +33,30 @@ import com.krushik.speechtotext.R;
  */
 public class SpeechRepeatActivity extends Activity implements OnClickListener, OnInitListener {
 
-    //variable for checking Voice Recognition support on user device
+    //переменная для проверки возможности распознавания голоса в телефоне
     private static final int VR_REQUEST = 999;
 
-    //variable for checking TTS engine data on user device
+    //переменная для проверки данных для TTS
     private int MY_DATA_CHECK_CODE = 0;
 
-    //Text To Speech instance
+    //Text To Speech интерфейс
     private TextToSpeech repeatTTS;
 
-    //ListView for displaying suggested words
+    //ListView для отображения распознанных слов
     private ListView wordList;
 
-    //Log tag for output information
+    //Log для вывода вспомогательной информации
     private final String LOG_TAG = "SpeechRepeatActivity";
 
-    /** Create the Activity, prepare to process speech and repeat */
+    /**
+     * Create the Activity, prepare to process speech and repeat
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        //call superclass
+        //вызов суперкласса
         super.onCreate(savedInstanceState);
-        //set content view
+        //установка контекста вывода
         setContentView(R.layout.activity_speech_repeat);
 
         //gain reference to speak button
@@ -62,43 +64,40 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
         //gain reference to word list
         wordList = (ListView) findViewById(R.id.word_list);
 
-        //find out whether speech recognition is supported
+        //проверяем, поддерживается ли распознование речи
         PackageManager packManager = getPackageManager();
         List<ResolveInfo> intActivities = packManager.queryIntentActivities
                 (new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         if (intActivities.size() != 0) {
-            //speech recognition is supported - detect user button clicks
+            //распознавание поддерживается, будем отслеживать событие щелчка по кнопке
             speechBtn.setOnClickListener(this);
-            //prepare the TTS to repeat chosen words
+            //подготовка движка TTS для проговаривания слов
             Intent checkTTSIntent = new Intent();
-            //check TTS data
+            //проверка наличия TTS
             checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-            //start the checking Intent - will retrieve result in onActivityResult
+            //запуск checkTTSIntent интента
             startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
-        }
-        else
-        {
-            //speech recognition not supported, disable button and output message
+        } else {
+            //распознавание не работает. Заблокируем кнопку и выведем соответствующее предупреждение.
             speechBtn.setEnabled(false);
             Toast.makeText(this, "Oops - Speech recognition not supported!", Toast.LENGTH_LONG).show();
         }
 
-        //detect user clicks of suggested words
+        //засекаем щелчок пользователя по слову из списка
         wordList.setOnItemClickListener(new OnItemClickListener() {
 
-            //click listener for items within list
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                //cast the view
-                TextView wordView = (TextView)view;
-                //retrieve the chosen word
+            //метод вызывается в ответ на щелчок по слову
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //записываем в переменную TextView строки
+                TextView wordView = (TextView) view;
+                //получаем строку с текстом
                 String wordChosen = (String) wordView.getText();
-                //output for debugging
-                Log.v(LOG_TAG, "chosen: "+wordChosen);
+                //выводим ее в лог для отладки
+                Log.v(LOG_TAG, "chosen: " + wordChosen);
                 //speak the word using the TTS
-                repeatTTS.speak("You said: "+wordChosen, TextToSpeech.QUEUE_FLUSH, null);
-                //output Toast message
-                Toast.makeText(SpeechRepeatActivity.this, "You said: "+wordChosen, Toast.LENGTH_SHORT).show();//**alter for your Activity name***
+                repeatTTS.speak("You said: " + wordChosen, TextToSpeech.QUEUE_FLUSH, null);
+                //выводим Toast сообщение
+                Toast.makeText(SpeechRepeatActivity.this, "You said: " + wordChosen, Toast.LENGTH_SHORT).show();//**alter for your Activity name***
             }
         });
     }
@@ -118,46 +117,44 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
      */
     private void listenToSpeech() {
 
-        //start the speech recognition intent passing required data
+        //запускаем интент, распознающий речь и передаем ему требуемые данные
         Intent listenIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        //indicate package
+        //указываем пакет
         listenIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-        //message to display while listening
+        //В процессе распознования выводим сообщение
         listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a word!");
-        //set speech model
+        //устанавливаем модель речи
         listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        //specify number of results to retrieve
+        //указываем число результатов, которые могут быть получены
         listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
 
-        //start listening
+        //начинаем прослушивание
         startActivityForResult(listenIntent, VR_REQUEST);
     }
 
     /**
      * onActivityResults handles:
-     *  - retrieving results of speech recognition listening
-     *  - retrieving result of TTS data check
+     * - retrieving results of speech recognition listening
+     * - retrieving result of TTS data check
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //check speech recognition result
-        if (requestCode == VR_REQUEST && resultCode == RESULT_OK)
-        {
-            //store the returned word list as an ArrayList
+        //проверяем результат распознавания речи
+        if (requestCode == VR_REQUEST && resultCode == RESULT_OK) {
+            //Добавляем распознанные слова в список результатов
             ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            //set the retrieved list to display in the ListView using an ArrayAdapter
-            wordList.setAdapter(new ArrayAdapter<String> (this, R.layout.word, suggestedWords));
+            //Передаем список возможных слов через ArrayAdapter компоненту ListView
+            wordList.setAdapter(new ArrayAdapter<String>(this, R.layout.word, suggestedWords));
         }
 
+        //tss код здесь
         //returned from TTS data check
-        if (requestCode == MY_DATA_CHECK_CODE)
-        {
-            //we have the data - create a TTS instance
+        if (requestCode == MY_DATA_CHECK_CODE) {
+            //все необходимые приложения установлены, создаем TTS
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
                 repeatTTS = new TextToSpeech(this, this);
-                //data not installed, prompt the user to install it
-            else
-            {
+                //движок не установлен, предположим пользователю установить его
+            else {
                 //intent will take user to TTS download page in Google Play
                 Intent installTTSIntent = new Intent();
                 installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -165,7 +162,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
             }
         }
 
-        //call superclass method
+        //вызываем метод родительского класса
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -175,7 +172,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
     public void onInit(int initStatus) {
         //if successful, set locale
         if (initStatus == TextToSpeech.SUCCESS)
-            repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
+            repeatTTS.setLanguage(Locale.UK);//Язык
 
     }
 }
