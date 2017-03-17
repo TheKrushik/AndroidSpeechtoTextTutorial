@@ -31,32 +31,30 @@ import com.krushik.speechtotext.R;
  * - presents user with list of suggested words
  * - when user selects a word from the list, the app speaks the word back using the TTS engine
  */
-public class SpeechRepeatActivity extends Activity implements OnClickListener, OnInitListener {
+public class  SpeechRepeatActivity extends Activity implements OnClickListener, OnInitListener {
 
-    //переменная для проверки возможности распознавания голоса в телефоне
+    //variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
 
-    //переменная для проверки данных для TTS
+    //variable for checking TTS engine data on user device
     private int MY_DATA_CHECK_CODE = 0;
 
-    //Text To Speech интерфейс
+    //Text To Speech instance
     private TextToSpeech repeatTTS;
 
-    //ListView для отображения распознанных слов
+    //ListView for displaying suggested words
     private ListView wordList;
 
-    //Log для вывода вспомогательной информации
+    //Log tag for output information
     private final String LOG_TAG = "SpeechRepeatActivity";
 
-    /**
-     * Create the Activity, prepare to process speech and repeat
-     */
+    /** Create the Activity, prepare to process speech and repeat */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        //вызов суперкласса
+        //call superclass
         super.onCreate(savedInstanceState);
-        //установка контекста вывода
+        //set content view
         setContentView(R.layout.activity_speech_repeat);
 
         //gain reference to speak button
@@ -64,40 +62,43 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
         //gain reference to word list
         wordList = (ListView) findViewById(R.id.word_list);
 
-        //проверяем, поддерживается ли распознование речи
+        //find out whether speech recognition is supported
         PackageManager packManager = getPackageManager();
         List<ResolveInfo> intActivities = packManager.queryIntentActivities
                 (new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         if (intActivities.size() != 0) {
-            //распознавание поддерживается, будем отслеживать событие щелчка по кнопке
+            //speech recognition is supported - detect user button clicks
             speechBtn.setOnClickListener(this);
-            //подготовка движка TTS для проговаривания слов
+            //prepare the TTS to repeat chosen words
             Intent checkTTSIntent = new Intent();
-            //проверка наличия TTS
+            //check TTS data
             checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-            //запуск checkTTSIntent интента
+            //start the checking Intent - will retrieve result in onActivityResult
             startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
-        } else {
-            //распознавание не работает. Заблокируем кнопку и выведем соответствующее предупреждение.
+        }
+        else
+        {
+            //speech recognition not supported, disable button and output message
             speechBtn.setEnabled(false);
             Toast.makeText(this, "Oops - Speech recognition not supported!", Toast.LENGTH_LONG).show();
         }
 
-        //засекаем щелчок пользователя по слову из списка
+        //detect user clicks of suggested words
         wordList.setOnItemClickListener(new OnItemClickListener() {
 
-            //метод вызывается в ответ на щелчок по слову
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //записываем в переменную TextView строки
-                TextView wordView = (TextView) view;
-                //получаем строку с текстом
+            //click listener for items within list
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                //cast the view
+                TextView wordView = (TextView)view;
+                //retrieve the chosen word
                 String wordChosen = (String) wordView.getText();
-                //выводим ее в лог для отладки
-                Log.v(LOG_TAG, "chosen: " + wordChosen);
+                //output for debugging
+                Log.v(LOG_TAG, "chosen: "+wordChosen);
                 //speak the word using the TTS
-                repeatTTS.speak("You said: " + wordChosen, TextToSpeech.QUEUE_FLUSH, null);
-                //выводим Toast сообщение
-                Toast.makeText(SpeechRepeatActivity.this, "You said: " + wordChosen, Toast.LENGTH_SHORT).show();//**alter for your Activity name***
+                repeatTTS.speak("You said: "+wordChosen, TextToSpeech.QUEUE_FLUSH, null);
+                //output Toast message
+                Toast.makeText(SpeechRepeatActivity.this, "You said: "+wordChosen, Toast.LENGTH_SHORT).show();//**alter for your Activity name***
             }
         });
     }
@@ -117,44 +118,46 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
      */
     private void listenToSpeech() {
 
-        //запускаем интент, распознающий речь и передаем ему требуемые данные
+        //start the speech recognition intent passing required data
         Intent listenIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        //указываем пакет
+        //indicate package
         listenIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-        //В процессе распознования выводим сообщение
+        //message to display while listening
         listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a word!");
-        //устанавливаем модель речи
+        //set speech model
         listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        //указываем число результатов, которые могут быть получены
-        listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
+        //specify number of results to retrieve
+        listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
 
-        //начинаем прослушивание
+        //start listening
         startActivityForResult(listenIntent, VR_REQUEST);
     }
 
     /**
      * onActivityResults handles:
-     * - retrieving results of speech recognition listening
-     * - retrieving result of TTS data check
+     *  - retrieving results of speech recognition listening
+     *  - retrieving result of TTS data check
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //проверяем результат распознавания речи
-        if (requestCode == VR_REQUEST && resultCode == RESULT_OK) {
-            //Добавляем распознанные слова в список результатов
+        //check speech recognition result
+        if (requestCode == VR_REQUEST && resultCode == RESULT_OK)
+        {
+            //store the returned word list as an ArrayList
             ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            //Передаем список возможных слов через ArrayAdapter компоненту ListView
-            wordList.setAdapter(new ArrayAdapter<String>(this, R.layout.word, suggestedWords));
+            //set the retrieved list to display in the ListView using an ArrayAdapter
+            wordList.setAdapter(new ArrayAdapter<String> (this, R.layout.word, suggestedWords));
         }
 
-        //tss код здесь
         //returned from TTS data check
-        if (requestCode == MY_DATA_CHECK_CODE) {
-            //все необходимые приложения установлены, создаем TTS
+        if (requestCode == MY_DATA_CHECK_CODE)
+        {
+            //we have the data - create a TTS instance
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
                 repeatTTS = new TextToSpeech(this, this);
-                //движок не установлен, предположим пользователю установить его
-            else {
+                //data not installed, prompt the user to install it
+            else
+            {
                 //intent will take user to TTS download page in Google Play
                 Intent installTTSIntent = new Intent();
                 installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -162,7 +165,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
             }
         }
 
-        //вызываем метод родительского класса
+        //call superclass method
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -172,7 +175,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
     public void onInit(int initStatus) {
         //if successful, set locale
         if (initStatus == TextToSpeech.SUCCESS)
-            repeatTTS.setLanguage(Locale.UK);//Язык
+            repeatTTS.setLanguage(Locale.UK);//***choose your own locale here***
 
     }
 }
