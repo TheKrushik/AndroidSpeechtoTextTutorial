@@ -7,7 +7,9 @@ import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.krushik.speechtotext.R;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     Button bTalk;
     Button btn2;
+    private ListView wordList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         bTalk = (Button) findViewById(R.id.bTalk);
         tv = (TextView) findViewById(R.id.tvSpeech);
+        wordList = (ListView) findViewById(R.id.word_list);
 
         //initialize the recognizer
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -98,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
             bTalk.setBackgroundResource(R.drawable.ic_microphone);
             if (resultStringArrayList != null) {
                 viewChanger(true, resultStringArrayList.get(0));
+
+                wordList.setAdapter(new ArrayAdapter<String>(MainActivity.this, R.layout.word, resultStringArrayList));
             } else {
                 viewChanger(true, "Couldn’t recognize");
             }
@@ -116,10 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void viewChanger(boolean isEnabled, String s) {
-
         bTalk.setEnabled(isEnabled);
         tv.setText(s);
-
     }
 
     public void OnClick(View v) {

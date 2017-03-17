@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context="info.krushik.speechtotext.MainActivity">
 
-    <Button
-        android:id="@+id/bTalk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvSpeech"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_microphone" />
-
     <TextView
         android:id="@+id/tvSpeech"
         android:layout_width="wrap_content"
@@ -24,12 +16,34 @@
         android:text="Press the button below and say something!"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <ListView
+        android:id="@+id/word_list"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:paddingBottom="3dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp"
+        android:layout_below="@+id/tvSpeech" />
+
+    <Button
+        android:id="@+id/bTalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_microphone"
+        android:layout_below="@+id/word_list"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:id="@+id/btn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2 Examlpe"
         android:onClick="OnClick"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
