@@ -62,7 +62,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
         //gain reference to speak button
         Button speechBtn = (Button) findViewById(R.id.speech_btn);
         //gain reference to word list
-        wordList = (ListView) findViewById(R.id.word_list);
+        wordList = (ListView) findViewById(R.id.lvWord);
 
         //проверяем, поддерживается ли распознование речи
         PackageManager packManager = getPackageManager();
@@ -146,7 +146,7 @@ public class SpeechRepeatActivity extends Activity implements OnClickListener, O
             //Добавляем распознанные слова в список результатов
             ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             //Передаем список возможных слов через ArrayAdapter компоненту ListView
-            wordList.setAdapter(new ArrayAdapter<String>(this, R.layout.word, suggestedWords));
+            wordList.setAdapter(new ArrayAdapter<String>(this, R.layout.item_word, suggestedWords));
         }
 
         //tss код здесь

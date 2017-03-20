@@ -13,16 +13,15 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:padding="30dp"
-        android:text="Press the button below and say something!"
+        android:text="Press the button and say something!"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView
-        android:id="@+id/word_list"
+        android:id="@+id/lvWord"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_weight="1"
         android:paddingBottom="3dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -30,11 +29,11 @@
         android:layout_below="@+id/tvSpeech" />
 
     <Button
-        android:id="@+id/bTalk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_microphone"
-        android:layout_below="@+id/word_list"
+        android:id="@+id/btnTalk"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/ic_play_pronunciation"
+        android:layout_below="@+id/lvWord"
         android:layout_centerHorizontal="true" />
 
     <Button
