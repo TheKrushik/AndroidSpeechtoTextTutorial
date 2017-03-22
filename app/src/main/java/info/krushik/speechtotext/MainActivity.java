@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.krushik.speechtotext.R;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView m_tvSpeech;
     private Button btnTalk;
     private ListView lvWord;
-//    Button btn2;
+    Button btn2;
+    Button btn3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-//        btn2 = (Button) findViewById(R.id.btn2);
+        btn2 = (Button) findViewById(R.id.btn2);
+        btn3 = (Button) findViewById(R.id.btn3);
 
         m_tvSpeech = (TextView) findViewById(R.id.tvSpeech);
         btnTalk = (Button) findViewById(R.id.btnTalk);
@@ -49,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
         //initialize the intent what will be registered with the recognizer later
         recognizeIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 //        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
-        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en");
+        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en");
+        recognizeIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
         recognizeIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
@@ -131,11 +132,15 @@ public class MainActivity extends AppCompatActivity {
         m_tvSpeech.setText(s);
     }
 
-    public void OnClick(View v) {
+    public void btnClick(View v) {
         switch (v.getId()) {
             case R.id.btn2:
-                Intent intent = new Intent(this, SpeechRepeatActivity.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(this, SpeechRepeatActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.btn3:
+                Intent intent3 = new Intent(this, VoiceRecognitionActivity.class);
+                startActivity(intent3);
                 break;
         }
     }

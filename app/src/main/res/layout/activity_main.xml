@@ -20,32 +20,43 @@
         android:id="@+id/lvWord"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:layout_below="@+id/tvSpeech"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:paddingBottom="3dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="3dp"
-        android:layout_below="@+id/tvSpeech" />
+        android:paddingTop="3dp" />
 
     <Button
         android:id="@+id/btnTalk"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/ic_play_pronunciation"
         android:layout_below="@+id/lvWord"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_play_pronunciation" />
 
     <Button
         android:id="@+id/btn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2 Examlpe"
-        android:onClick="OnClick"
-        android:visibility="gone"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:onClick="btnClick"
+        android:visibility="invisible"
+        android:text="2 Examlpe" />
+
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn2"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:onClick="btnClick"
+        android:visibility="invisible"
+        android:text="3 Examlpe" />
 
 
 </RelativeLayout>

@@ -23,7 +23,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.TextView;
 
-import com.krushik.speechtotext.R;
 
 /**
  * SpeechRepeatActivity
